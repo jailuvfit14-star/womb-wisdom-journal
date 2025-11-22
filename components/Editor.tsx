@@ -8,7 +8,7 @@
 
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Save, Eye, EyeOff } from 'lucide-react';
+import { Save, Eye, EyeOff, Sparkles } from 'lucide-react';
 
 interface EditorProps {
   title: string;
@@ -17,6 +17,8 @@ interface EditorProps {
   onContentChange: (content: string) => void;
   onSave: () => void;
   isNewEntry: boolean;
+  onReflect?: () => void;
+  hasLastEntry?: boolean;
 }
 
 export default function Editor({
@@ -26,6 +28,8 @@ export default function Editor({
   onContentChange,
   onSave,
   isNewEntry,
+  onReflect,
+  hasLastEntry = false,
 }: EditorProps) {
   const [showPreview, setShowPreview] = useState(false);
   const [isSaved, setIsSaved] = useState(true);
@@ -57,7 +61,7 @@ export default function Editor({
         />
 
         {/* Action Buttons */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap">
           {/* Save Button */}
           <button
             onClick={handleSave}
@@ -80,6 +84,17 @@ export default function Editor({
             {showPreview ? <EyeOff size={16} /> : <Eye size={16} />}
             {showPreview ? 'Edit' : 'Preview'}
           </button>
+
+          {/* Reflect With Me Button */}
+          {onReflect && hasLastEntry && (
+            <button
+              onClick={onReflect}
+              className="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blush-200 to-clay-200 text-cocoa-700 rounded-soft hover:from-blush-300 hover:to-clay-300 transition-all duration-200 font-sans text-sm font-medium shadow-sm hover:shadow-md"
+            >
+              <Sparkles size={16} />
+              Reflect With Me
+            </button>
+          )}
         </div>
       </div>
 

@@ -11,6 +11,7 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import Editor from '@/components/Editor';
+import ReflectionModal from '@/components/ReflectionModal';
 import { JournalEntry, JournalEntries } from '@/types/journal';
 import {
   getEntries,
@@ -28,6 +29,11 @@ export default function Home() {
   const [content, setContent] = useState('');
   const [isNewEntry, setIsNewEntry] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
+
+  // Reflection feature state
+  const [isReflectionModalOpen, setIsReflectionModalOpen] = useState(false);
+  const [reflectionPrompt, setReflectionPrompt] = useState('');
+  const [isLoadingReflection, setIsLoadingReflection] = useState(false);
 
   // Load entries from localStorage on mount
   useEffect(() => {
@@ -115,6 +121,48 @@ export default function Home() {
     }
   };
 
+  /**
+   * Handle reflection feature - generate AI prompt based on last entry
+   */
+  const handleReflect = async () => {
+    const allEntries = getEntries();
+
+    if (allEntries.length === 0) {
+      alert('Please save at least one entry before using the reflection feature.');
+      return;
+    }
+
+    // Get the most recent entry
+    const lastEntry = allEntries[0];
+
+    setIsReflectionModalOpen(true);
+    setIsLoadingReflection(true);
+    setReflectionPrompt('');
+
+    try {
+      const response = await fetch('/api/reflect', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ lastEntry }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to generate reflection');
+      }
+
+      const data = await response.json();
+      setReflectionPrompt(data.prompt);
+    } catch (error) {
+      console.error('Error generating reflection:', error);
+      setReflectionPrompt('Unable to generate a reflection prompt at this time. Please ensure your OpenAI API key is configured and try again.');
+    } finally {
+      setIsLoadingReflection(false);
+    }
+  };
+
   // Don't render until we've loaded from localStorage (prevents hydration issues)
   if (!isLoaded) {
     return (
@@ -151,9 +199,19 @@ export default function Home() {
             onContentChange={setContent}
             onSave={handleSave}
             isNewEntry={isNewEntry}
+            onReflect={handleReflect}
+            hasLastEntry={entries.length > 0}
           />
         </div>
       </main>
+
+      {/* Reflection Modal */}
+      <ReflectionModal
+        isOpen={isReflectionModalOpen}
+        onClose={() => setIsReflectionModalOpen(false)}
+        prompt={reflectionPrompt}
+        isLoading={isLoadingReflection}
+      />
     </div>
   );
 }
