@@ -8,6 +8,9 @@ export interface JournalEntry {
   content: string;
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
+  isPasswordProtected?: boolean;
+  passwordHash?: string;
+  encryptedContent?: string;
 }
 
 export type JournalEntries = JournalEntry[];

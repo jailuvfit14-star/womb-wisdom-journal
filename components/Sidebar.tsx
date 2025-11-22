@@ -5,7 +5,7 @@
  */
 
 import { JournalEntry } from '@/types/journal';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Lock } from 'lucide-react';
 
 interface SidebarProps {
   entries: JournalEntry[];
@@ -66,13 +66,22 @@ export default function Sidebar({
               onClick={() => onSelectEntry(entry)}
             >
               {/* Entry Title */}
-              <h3
-                className={`font-serif text-base mb-1 pr-8 truncate ${
-                  currentEntryId === entry.id ? 'text-cocoa-700' : 'text-cocoa-600'
-                }`}
-              >
-                {entry.title}
-              </h3>
+              <div className="flex items-center gap-2 mb-1 pr-8">
+                {entry.isPasswordProtected && (
+                  <Lock
+                    size={14}
+                    className="flex-shrink-0 text-clay-500"
+                    aria-label="Password protected"
+                  />
+                )}
+                <h3
+                  className={`font-serif text-base truncate ${
+                    currentEntryId === entry.id ? 'text-cocoa-700' : 'text-cocoa-600'
+                  }`}
+                >
+                  {entry.title}
+                </h3>
+              </div>
 
               {/* Entry Date */}
               <p className="text-xs text-cocoa-400 font-sans">
