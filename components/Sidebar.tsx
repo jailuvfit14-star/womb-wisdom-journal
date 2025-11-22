@@ -4,8 +4,11 @@
  * Customization: Update colors, spacing, or hover effects in className strings
  */
 
+'use client';
+
 import { JournalEntry } from '@/types/journal';
-import { Plus, Trash2 } from 'lucide-react';
+import { Plus, Trash2, Download } from 'lucide-react';
+import { generatePDF } from '@/lib/pdfGenerator';
 
 interface SidebarProps {
   entries: JournalEntry[];
@@ -31,6 +34,19 @@ export default function Sidebar({
     const day = date.getDate();
     const year = date.getFullYear();
     return `${month} ${day}, ${year}`;
+  };
+
+  /**
+   * Handle PDF download for an entry
+   */
+  const handleDownloadPDF = async (entry: JournalEntry, e: React.MouseEvent) => {
+    e.stopPropagation(); // Prevent entry selection when downloading
+    try {
+      await generatePDF(entry);
+    } catch (error) {
+      console.error('Error generating PDF:', error);
+      alert('Failed to generate PDF. Please try again.');
+    }
   };
 
   return (
@@ -79,19 +95,33 @@ export default function Sidebar({
                 {formatDate(entry.createdAt)}
               </p>
 
-              {/* Delete Button - appears on hover */}
-              <button
-                onClick={(e) => {
-                  e.stopPropagation(); // Prevent entry selection when deleting
-                  if (confirm('Are you sure you want to delete this entry?')) {
-                    onDeleteEntry(entry.id);
-                  }
-                }}
-                className="absolute top-3 right-3 p-1.5 rounded-full bg-blush-100 text-blush-500 opacity-0 group-hover:opacity-100 hover:bg-blush-200 hover:text-blush-600 transition-all duration-200"
-                aria-label="Delete entry"
-              >
-                <Trash2 size={14} />
-              </button>
+              {/* Action Buttons - appear on hover */}
+              <div className="absolute top-3 right-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-all duration-200">
+                {/* Download PDF Button */}
+                <button
+                  onClick={(e) => handleDownloadPDF(entry, e)}
+                  className="p-1.5 rounded-full bg-clay-100 text-clay-500 hover:bg-clay-200 hover:text-clay-600 transition-all duration-200"
+                  aria-label="Download as PDF"
+                  title="Download as PDF"
+                >
+                  <Download size={14} />
+                </button>
+
+                {/* Delete Button */}
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent entry selection when deleting
+                    if (confirm('Are you sure you want to delete this entry?')) {
+                      onDeleteEntry(entry.id);
+                    }
+                  }}
+                  className="p-1.5 rounded-full bg-blush-100 text-blush-500 hover:bg-blush-200 hover:text-blush-600 transition-all duration-200"
+                  aria-label="Delete entry"
+                  title="Delete entry"
+                >
+                  <Trash2 size={14} />
+                </button>
+              </div>
             </div>
           ))
         )}
