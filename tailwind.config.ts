@@ -38,6 +38,8 @@ const config: Config = {
           300: '#d8b6a3',
           400: '#c4947a',
           500: '#b07a5e',
+          600: '#9a6449',
+          700: '#7d5039',
         },
         // Muted cocoa / warm browns
         cocoa: {
@@ -49,6 +51,7 @@ const config: Config = {
           500: '#8d7566',
           600: '#705d51',
           700: '#5a4a40',
+          800: '#483933',
         },
       },
       // Elegant font families
