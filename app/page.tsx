@@ -118,14 +118,14 @@ export default function Home() {
   // Don't render until we've loaded from localStorage (prevents hydration issues)
   if (!isLoaded) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-cream-50">
-        <p className="text-cocoa-400 font-sans italic">Loading your journal...</p>
+      <div className="min-h-screen flex items-center justify-center theme-bg">
+        <p className="theme-text-light font-sans italic">Loading your journal...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen flex flex-col bg-cream-50">
+    <div className="min-h-screen flex flex-col theme-bg">
       {/* Header */}
       <Header />
 

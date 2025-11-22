@@ -12,20 +12,48 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Inter:wght@300;400;500;600&display=swap');
 
 @layer base {
-  /* Set CSS variables for fonts */
+  /* Set CSS variables for fonts and theme colors */
   :root {
     --font-playfair: 'Playfair Display', serif;
     --font-inter: 'Inter', sans-serif;
+
+    /* Theme color variables - defaults to womb theme */
+    --color-background: #FFF6EE;
+    --color-surface: #F5D9CF;
+    --color-accent: #D8A15F;
+    --color-text: #8B5A33;
+    --color-text-light: #a4907f;
+    --color-border: #f7b5ba;
+    --color-border-light: #fbd9db;
+    --color-hover: #fdeced;
+    --color-button-bg: #c4947a;
+    --color-button-hover: #b07a5e;
+    --color-button-text: #ffffff;
   }
 
-  /* Base body styles */
+  /* Base body styles with theme awareness */
   body {
-    @apply font-sans text-cocoa-700 bg-cream-50 antialiased;
+    @apply font-sans antialiased;
+    background-color: var(--color-background);
+    color: var(--color-text);
+    transition: background-color 0.3s ease, color 0.3s ease;
   }
 
   /* Smooth scrolling */
   html {
     scroll-behavior: smooth;
+  }
+
+  /* Smooth transitions for all theme-aware elements */
+  * {
+    transition-property: background-color, border-color, color, fill, stroke;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+  }
+
+  /* Prevent transitions on page load */
+  .no-transition * {
+    transition: none !important;
   }
 }
 
@@ -117,10 +145,62 @@
   }
 
   .custom-scrollbar::-webkit-scrollbar-track {
-    @apply bg-cream-100 rounded-full;
+    background-color: var(--color-hover);
+    border-radius: 9999px;
   }
 
   .custom-scrollbar::-webkit-scrollbar-thumb {
-    @apply bg-clay-300 rounded-full hover:bg-clay-400;
+    background-color: var(--color-border);
+    border-radius: 9999px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-accent);
+  }
+
+  /* Theme-aware utility classes */
+  .theme-bg {
+    background-color: var(--color-background);
+  }
+
+  .theme-surface {
+    background-color: var(--color-surface);
+  }
+
+  .theme-accent-bg {
+    background-color: var(--color-accent);
+  }
+
+  .theme-text {
+    color: var(--color-text);
+  }
+
+  .theme-text-light {
+    color: var(--color-text-light);
+  }
+
+  .theme-accent-text {
+    color: var(--color-accent);
+  }
+
+  .theme-border {
+    border-color: var(--color-border);
+  }
+
+  .theme-border-light {
+    border-color: var(--color-border-light);
+  }
+
+  .theme-hover {
+    background-color: var(--color-hover);
+  }
+
+  .theme-button {
+    background-color: var(--color-button-bg);
+    color: var(--color-button-text);
+  }
+
+  .theme-button:hover {
+    background-color: var(--color-button-hover);
   }
 }
