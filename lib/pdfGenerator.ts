@@ -68,11 +68,10 @@ export async function generatePDF(entry: JournalEntry): Promise<void> {
   try {
     // Capture the container as canvas with high quality
     const canvas = await html2canvas(container, {
-      scale: 2, // Higher quality
       useCORS: true,
       backgroundColor: '#fdfcfa',
       logging: false,
-    });
+    } as any);
 
     // Create PDF
     const imgData = canvas.toDataURL('image/png');
