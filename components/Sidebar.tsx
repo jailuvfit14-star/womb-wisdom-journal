@@ -6,6 +6,7 @@
 
 import { JournalEntry } from '@/types/journal';
 import { Plus, Trash2 } from 'lucide-react';
+import { MoodIcon } from './MoodSelector';
 
 interface SidebarProps {
   entries: JournalEntry[];
@@ -65,17 +66,25 @@ export default function Sidebar({
               }`}
               onClick={() => onSelectEntry(entry)}
             >
-              {/* Entry Title */}
-              <h3
-                className={`font-serif text-base mb-1 pr-8 truncate ${
-                  currentEntryId === entry.id ? 'text-cocoa-700' : 'text-cocoa-600'
-                }`}
-              >
-                {entry.title}
-              </h3>
+              {/* Entry Header with Mood */}
+              <div className="flex items-start gap-2 mb-1">
+                {entry.mood && (
+                  <div className="flex-shrink-0 mt-0.5">
+                    <MoodIcon mood={entry.mood} size={16} />
+                  </div>
+                )}
+                {/* Entry Title */}
+                <h3
+                  className={`font-serif text-base flex-1 pr-8 truncate ${
+                    currentEntryId === entry.id ? 'text-cocoa-700' : 'text-cocoa-600'
+                  }`}
+                >
+                  {entry.title}
+                </h3>
+              </div>
 
               {/* Entry Date */}
-              <p className="text-xs text-cocoa-400 font-sans">
+              <p className={`text-xs text-cocoa-400 font-sans ${entry.mood ? 'ml-8' : ''}`}>
                 {formatDate(entry.createdAt)}
               </p>
 

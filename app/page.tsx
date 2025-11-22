@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react';
 import Header from '@/components/Header';
 import Sidebar from '@/components/Sidebar';
 import Editor from '@/components/Editor';
-import { JournalEntry, JournalEntries } from '@/types/journal';
+import { JournalEntry, JournalEntries, MoodType } from '@/types/journal';
 import {
   getEntries,
   createEntry,
@@ -26,6 +26,7 @@ export default function Home() {
   const [currentEntry, setCurrentEntry] = useState<JournalEntry | null>(null);
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [mood, setMood] = useState<MoodType | undefined>(undefined);
   const [isNewEntry, setIsNewEntry] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
@@ -41,6 +42,7 @@ export default function Home() {
       setCurrentEntry(mostRecent);
       setTitle(mostRecent.title);
       setContent(mostRecent.content);
+      setMood(mostRecent.mood);
     }
   }, []);
 
@@ -51,6 +53,7 @@ export default function Home() {
     setCurrentEntry(null);
     setTitle('');
     setContent('');
+    setMood(undefined);
     setIsNewEntry(true);
   };
 
@@ -61,6 +64,7 @@ export default function Home() {
     setCurrentEntry(entry);
     setTitle(entry.title);
     setContent(entry.content);
+    setMood(entry.mood);
     setIsNewEntry(false);
   };
 
@@ -75,14 +79,14 @@ export default function Home() {
 
     if (isNewEntry || !currentEntry) {
       // Create new entry
-      const newEntry = createEntry(title || 'Untitled Entry', content);
+      const newEntry = createEntry(title || 'Untitled Entry', content, mood);
       const updatedEntries = getEntries();
       setEntries(updatedEntries);
       setCurrentEntry(newEntry);
       setIsNewEntry(false);
     } else {
       // Update existing entry
-      const updated = updateEntry(currentEntry.id, title, content);
+      const updated = updateEntry(currentEntry.id, title, content, mood);
       if (updated) {
         const updatedEntries = getEntries();
         setEntries(updatedEntries);
@@ -107,6 +111,7 @@ export default function Home() {
           setCurrentEntry(nextEntry);
           setTitle(nextEntry.title);
           setContent(nextEntry.content);
+          setMood(nextEntry.mood);
         } else {
           // No more entries, start fresh
           handleNewEntry();
@@ -147,8 +152,10 @@ export default function Home() {
           <Editor
             title={title}
             content={content}
+            mood={mood}
             onTitleChange={setTitle}
             onContentChange={setContent}
+            onMoodChange={setMood}
             onSave={handleSave}
             isNewEntry={isNewEntry}
           />

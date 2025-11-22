@@ -3,7 +3,7 @@
  * All CRUD operations for journal entries
  */
 
-import { JournalEntry, JournalEntries } from '@/types/journal';
+import { JournalEntry, JournalEntries, MoodType } from '@/types/journal';
 
 const STORAGE_KEY = 'aurora_journal_entries';
 
@@ -46,12 +46,13 @@ export const saveEntries = (entries: JournalEntries): void => {
 /**
  * Create a new journal entry
  */
-export const createEntry = (title: string, content: string): JournalEntry => {
+export const createEntry = (title: string, content: string, mood?: MoodType): JournalEntry => {
   const now = new Date().toISOString();
   const newEntry: JournalEntry = {
     id: generateId(),
     title: title || 'Untitled Entry',
     content,
+    mood,
     createdAt: now,
     updatedAt: now,
   };
@@ -66,7 +67,7 @@ export const createEntry = (title: string, content: string): JournalEntry => {
 /**
  * Update an existing journal entry
  */
-export const updateEntry = (id: string, title: string, content: string): JournalEntry | null => {
+export const updateEntry = (id: string, title: string, content: string, mood?: MoodType): JournalEntry | null => {
   const entries = getEntries();
   const index = entries.findIndex(entry => entry.id === id);
 
@@ -76,6 +77,7 @@ export const updateEntry = (id: string, title: string, content: string): Journal
     ...entries[index],
     title: title || 'Untitled Entry',
     content,
+    mood,
     updatedAt: new Date().toISOString(),
   };
 

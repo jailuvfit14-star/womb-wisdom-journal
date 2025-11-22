@@ -9,12 +9,16 @@
 import { useState, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { Save, Eye, EyeOff } from 'lucide-react';
+import MoodSelector from './MoodSelector';
+import { MoodType } from '@/types/journal';
 
 interface EditorProps {
   title: string;
   content: string;
+  mood?: MoodType;
   onTitleChange: (title: string) => void;
   onContentChange: (content: string) => void;
+  onMoodChange: (mood: MoodType | undefined) => void;
   onSave: () => void;
   isNewEntry: boolean;
 }
@@ -22,8 +26,10 @@ interface EditorProps {
 export default function Editor({
   title,
   content,
+  mood,
   onTitleChange,
   onContentChange,
+  onMoodChange,
   onSave,
   isNewEntry,
 }: EditorProps) {
@@ -33,7 +39,7 @@ export default function Editor({
   // Track if content has changed (for save indicator)
   useEffect(() => {
     setIsSaved(false);
-  }, [title, content]);
+  }, [title, content, mood]);
 
   const handleSave = () => {
     onSave();
@@ -55,6 +61,11 @@ export default function Editor({
           placeholder="Entry Title"
           className="w-full font-serif text-2xl md:text-3xl text-cocoa-700 placeholder:text-cocoa-300 bg-transparent border-none outline-none mb-4"
         />
+
+        {/* Mood Selector */}
+        <div className="mb-5">
+          <MoodSelector selectedMood={mood} onMoodChange={onMoodChange} />
+        </div>
 
         {/* Action Buttons */}
         <div className="flex items-center gap-3">
